@@ -8,25 +8,38 @@ import java.util.HashMap;
 import vo.Emp;
 
 public class EmpDAO {
-	public static ArrayList<HashMap<String, Object>> selectJobCaseList() {
-		/*	select ename,
-		        job,
-		        CASE 
-		        WHEN job = 'PRESIDENT' THEN '빨강'
-		        WHEN job = 'MANAGER' THEN '주황'
-		        WHEN job = 'ANALYST' THEN '노랑'
-		        WHEN job = 'CLERK' THEN '초록'
-		        ELSE '파랑' END color
-			FROM emp
-			ORDER BY (case  
-		        WHEN color = '빨강' THEN 1
-		        WHEN color = '주황' THEN 2
-		        WHEN color = '노랑' THEN 3
-		        WHEN color = '초록' THEN 4
-		        ELSE 5 END) ASC; 
-		   */
+	
+	public static ArrayList<HashMap<String, Object>> selectJobCaseList() throws Exception  {
+		
+		ArrayList<HashMap<String, Object>> list = new ArrayList<>();
+		
+		// DB연동
+		Connection  conn = DBHelper.getConnection();
+		String sql =	"select ename, job,"
+				+ "        CASE "
+				+ "        WHEN job = 'PRESIDENT' THEN '빨강' "
+				+ "        WHEN job = 'MANAGER' THEN '주황' "
+				+ "        WHEN job = 'ANALYST' THEN '노랑' "
+				+ "        WHEN job = 'CLERK' THEN '초록' "
+				+ "        ELSE '파랑' END color"
+				+ " FROM emp"
+				+ " ORDER BY (CASE"
+				+ "        WHEN color = '빨강' THEN 1"
+				+ "        WHEN color = '주황' THEN 2"
+				+ "        WHEN color = '노랑' THEN 3"
+				+ "        WHEN color = '초록' THEN 4"
+				+ "        ELSE 5 END) ASC";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		ResultSet rs = stmt.executeQuery();
+		while(rs.next()) {
+			HashMap<String, Object> m = new HashMap<>();
+			m.put("ENAME", rs.getString("ENAME"));
+			m.put("JOB", rs.getString("JOB")); 
+			m.put("COLOR", rs.getString("COLOR")); 
+			list.add(m);
+		}
 				
-			return null;
+			return list;
 	}
 	// DEPTNO 뒤 부서별 인원을 같이 조회하는 메서드
 	public static ArrayList<HashMap<String, Integer>> selectDeptNoCntList() throws Exception {
