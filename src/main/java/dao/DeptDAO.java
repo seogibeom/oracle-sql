@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 import vo.Dept;
 
-public class DeptDAO {
+public class DeptDAO {	
 	// Map 사용
 	public static ArrayList<HashMap<String, Object>> selectDeptOnOffList() throws Exception {
 		ArrayList<HashMap<String, Object>> list = new ArrayList<>();
@@ -49,9 +49,12 @@ public class DeptDAO {
 		
 		while(rs.next()) {
 			Dept d = new Dept();
-			d.deptNo = rs.getInt("deptNo");
-			d.dname = rs.getString("dname");
-			d.loc = rs.getString("loc");
+			//d.deptNo = rs.getInt("deptNo");
+			d.setDeptNo( rs.getInt("deptNo"));
+			//d.dname = rs.getString("dname");
+			d.setDname(rs.getString("dname"));
+			//d.loc = rs.getString("loc");
+			d.setLoc(rs.getString("loc"));
 			list.add(d);
 		}
 		
