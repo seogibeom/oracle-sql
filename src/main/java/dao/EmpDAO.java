@@ -8,13 +8,70 @@ import java.util.HashMap;
 import vo.Emp;
 
 public class EmpDAO {
+	// q004WhereIn.jsp
+	public static ArrayList<Emp> selectEmpListByGrade
+				(ArrayList<Integer> ckList) throws Exception{
+		ArrayList<Emp> list = new ArrayList<>();
+		//DB연동
+		Connection conn = DBHelper.getConnection();
+		String sql = "SELECT ename, grade"
+				+ " FROM emp"
+				+ " WHERE grade IN ";
+		PreparedStatement stmt = null;
+		
+		if(ckList.size() == 1) {	// 1개 체크 했을경우
+			sql = sql + "(?)";
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, ckList.get(0));
+			
+		} else if (ckList.size() == 2) {	// 2개 체크 했을경우
+			sql = sql + "(?, ?)";
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, ckList.get(0));
+			stmt.setInt(2, ckList.get(1));
+			
+		} else if (ckList.size() == 3) {	// 3개 체크 했을경우
+			sql = sql + "(?, ?, ?)";
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, ckList.get(0));
+			stmt.setInt(2, ckList.get(1));
+			stmt.setInt(3, ckList.get(2));
+			
+		} else if (ckList.size() == 4) {	// 4개 체크 했을경우
+			sql = sql + "(?, ?, ? ,?)";
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, ckList.get(0));
+			stmt.setInt(2, ckList.get(1));
+			stmt.setInt(3, ckList.get(2));
+			stmt.setInt(4, ckList.get(3));
+			
+		} else if (ckList.size() == 5) {	// 5개 체크 했을경우
+			sql = sql + "(?, ?, ?, ?, ?)";
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, ckList.get(0));
+			stmt.setInt(2, ckList.get(1));
+			stmt.setInt(3, ckList.get(2));
+			stmt.setInt(4, ckList.get(3));
+			stmt.setInt(5, ckList.get(4));
+		}
+		
+		ResultSet rs = stmt.executeQuery();
+		while(rs.next()) {
+			Emp e = new Emp();
+			e.setEname(rs.getString("ename"));
+			e.setGrade(rs.getInt("grade"));
+			list.add(e);
+		}
 	
+		return list;
+	}
+	// q003
 	public static ArrayList<HashMap<String, Object>> selectJobCaseList() throws Exception  {
 		
 		ArrayList<HashMap<String, Object>> list = new ArrayList<>();
 		
 		// DB연동
-		Connection  conn = DBHelper.getConnection();
+		Connection conn = DBHelper.getConnection();
 		String sql =	"select ename, job,"
 				+ "        CASE "
 				+ "        WHEN job = 'PRESIDENT' THEN '빨강' "
@@ -47,7 +104,7 @@ public class EmpDAO {
 		ArrayList<HashMap<String, Integer>> list = new ArrayList<>();
 		
 		// DB연동
-		Connection  conn = DBHelper.getConnection();
+		Connection conn = DBHelper.getConnection();
 		
 		String sql = "SELECT deptno deptNo, COUNT(*) cnt" 
 				+ " FROM emp"
@@ -72,7 +129,7 @@ public class EmpDAO {
 			ArrayList<Integer> list = new ArrayList<>();
 			
 			// DB연동
-			Connection  conn = DBHelper.getConnection();
+			Connection conn = DBHelper.getConnection();
 			
 			String sql = "SELECT DISTINCT deptno AS deptNo\r\n"
 					+ "FROM emp\r\n"
