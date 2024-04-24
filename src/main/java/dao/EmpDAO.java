@@ -8,12 +8,49 @@ import java.util.HashMap;
 import vo.Emp;
 
 public class EmpDAO {
-	// q004WhereIn.jsp
-	public static ArrayList<Emp> selectEmpListByGrade
-				(ArrayList<Integer> ckList) throws Exception{
+	// q005OrderBy.jsp
+	public static ArrayList<Emp> selectEmpListSort(String col, String sort) throws Exception{
+		
+		// 매개값 디버깅
+		System.out.println(col+ "<= EmpDAO.selectEmpListSort param col");
+		System.out.println(sort+ "<= EmpDAO.selectEmpListSort param sort");
+		
 		ArrayList<Emp> list = new ArrayList<>();
+		Connection conn = DBHelper.getConnection();
+		
+		String sql ="SELECT empno, ename"
+				+ " FROM emp ";
+		
+		if(col !=null && sort != null) {
+			sql = sql + "ORDER BY " + col + " " + sort;
+		}
+		
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		System.out.println(stmt);
+		ResultSet rs = stmt.executeQuery();
+		while(rs.next()) {
+			Emp e = new Emp();
+			e.setEmpNo(rs.getInt("empno"));
+			e.setEname(rs.getString("ename"));
+			list.add(e);
+			
+		}
+	
+		conn.close();
+		return list;
+	}
+	
+	// q004WhereIn.jsp
+	public static ArrayList<Emp> selectEmpListByGrade(ArrayList<Integer> ckList) throws Exception{
+		
+		// 매개값 디버깅
+		System.out.println(ckList + "EmpDAO.selectEmpListByGrade param ckList");
+		
+		ArrayList<Emp> list = new ArrayList<>();
+		
 		//DB연동
 		Connection conn = DBHelper.getConnection();
+		
 		String sql = "SELECT ename, grade"
 				+ " FROM emp"
 				+ " WHERE grade IN ";
@@ -62,7 +99,7 @@ public class EmpDAO {
 			e.setGrade(rs.getInt("grade"));
 			list.add(e);
 		}
-	
+		conn.close();
 		return list;
 	}
 	// q003
